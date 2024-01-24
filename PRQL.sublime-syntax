@@ -1,0 +1,173 @@
+%YAML 1.2
+---
+# See http://www.sublimetext.com/docs/syntax.html
+file_extensions:
+  - prql
+scope: source.prql
+
+variables:
+  identifier: '[A-Za-z]\w*'
+
+contexts:
+  main:
+    - include: functions
+    - include: numbers
+
+    # Strings
+    - match: '[frs]?"'
+      scope: punctuation.definition.string.begin.prql
+      push: double_quoted_string
+
+    - match: "[frs]?'"
+      scope: punctuation.definition.string.begin.prql
+      push: single_quoted_string
+
+    # Docblocks
+    - match: '#!'
+      scope: punctuation.definition.documentation.prql
+      push: docblock_comment
+
+    # Comments
+    - match: '#'
+      scope: punctuation.definition.comment.prql
+      push: line_comment
+
+    # Keywords
+    - match: '\b(case)\b'
+      scope: keyword.control.prql
+
+    # Numbers
+    - match: '\b(-)?[0-9._e]+\b'
+      scope: constant.numeric.prql
+
+    # Transforms
+    - match: '\b(aggregate|derive|filter|from|group|join|select|sort|take|window)\b'
+      scope: keyword.other.prql
+
+    # constants
+    - match: true|false|null
+      scope: constant.language.prql
+
+    # assignment-expressions:
+    - match: =
+      scope: keyword.operator.assignment.inline.prql
+
+    # operators:
+    - match: ==|~=|\\+|-|\\*|!=|->|=>|<=|>=|&&|<|>
+      scope: keyword.operator.comparison.prql
+
+    - match: '[-+%/*]'
+      scope: keyword.operator.arithmetic.prql
+
+    # logical
+    - match: '&&|\|\|'
+      scope: keyword.operator.logical.prql
+
+    # sequence-separators:
+    - match: ','
+      scope: punctuation.separator.sequence.prql
+
+    # data types
+    - match: '\b(bool|int8|int16|int32|int64|int128|int|float|text|set)\b'
+      scope: storage.type.prql
+
+    # time units
+    - match: years|months|weeks|days|hours|minutes|seconds|milliseconds|microseconds
+      scope: keyword.other.prql
+
+    # module
+    - match: '\b(module)\s+({{identifier}})\b'
+      captures:
+        1: storage.type.module.prql
+        2: entity.name.module.prql
+
+    # variable-declaration:
+    - match: let
+      scope: keyword.declaration.prql
+
+    # Reserved variable names
+    - match: this|that
+      scope: variable.language.prql
+
+    # pipe
+    - match: \||\&
+      scope: keyword.operator.assignment.pipe.prql
+
+  functions:
+    # Aggregate functions
+    - match: '\b(any|average|concat_array|count|every|max|min|stddev|sum)\b'
+      scope: support.function.aggregate.prql
+
+    # Date functions
+    - match: '\b(to_text)\b'
+      scope: support.function.date.prql
+
+    # File reading functions
+    - match: '\b(read_csv|read_parquet)\b'
+      scope: support.function.file.prql
+
+    # List functions
+    - match: '\b(all|map|zip|_eq|_is_null)\b'
+      scope: support.function.list.prql
+
+    # Text functions
+    - match: '\b(contains|ends_with|extract|length|lower|ltrim|replace|rtrim|starts_with|trim|upper)\b'
+      scope: support.function.text.prql
+
+    # Math functions
+    - match: '\b(abs|acos|asin|atan|ceil|cos|degrees|exp|floor|ln|log|log10|pi|pow|radians|round|sin|sqrt|tan)\b'
+      scope: support.function.math.prql
+
+    # Window functions
+    - match: '\b(lag|lead|first|last|rank|rank_dense|row_number)\b'
+      scope: support.function.window.prql
+
+  numbers:
+    # hex
+    - match: (0x)((?:_?\h)+)
+      scope: meta.number.integer.hexadecimal.prql
+      captures:
+        1: constant.numeric.base.prql
+        2: constant.numeric.value.prql
+
+    # octal
+    - match: (0o)((?:_?[0-7])+)(\d*)
+      scope: meta.number.integer.octal.prql
+      captures:
+        1: constant.numeric.base.prql
+        2: constant.numeric.value.prql
+        3: invalid.illegal.digit.prql
+
+    # binary
+    - match: (0b)((?:_?[01])*)(\d*)
+      scope: meta.number.integer.binary.prql
+      captures:
+        1: constant.numeric.base.prql
+        2: constant.numeric.value.prql
+        3: invalid.illegal.digit.prql
+
+  double_quoted_string:
+    - meta_scope: string.quoted.double.prql
+    - match: '\\.'
+      scope: constant.character.escape.prql
+    - match: '"'
+      scope: punctuation.definition.string.end.prql
+      pop: true
+
+  single_quoted_string:
+    - meta_scope: string.quoted.single.prql
+    - match: '\\.'
+      scope: constant.character.escape.prql
+    - match: "'"
+      scope: punctuation.definition.string.end.prql
+      pop: true
+
+  line_comment:
+    - meta_scope: comment.line.prql
+    - match: $
+      pop: true
+
+  docblock_comment:
+    - meta_scope: comment.block.documentation.prql
+    - match: $
+      pop: true
