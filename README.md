@@ -4,7 +4,7 @@ This package adds syntax highlighting for [PRQL](https://prql-lang.org/) to Subl
 
 # Installation
 
-The easiest way to install is using Sublime's [Package Control](https://packagecontrol.io/packages/prql).
+The easiest way to install is using Sublime's [Package Control](https://packagecontrol.io/packages/PRQL).
 It's listed as `PRQL`.
 
 1. Open `Command Palette` using menu item `Tools → Command Palette...`
